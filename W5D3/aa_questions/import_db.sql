@@ -2,6 +2,10 @@ PRAGMA foreign_keys = ON;
 
 --Consider when/where/if CASCADE is needed
 --Optionally you can DROP TABLEs before CREATE TABLEs in reverse order of table creation
+--
+--First DROP TABLEs in order of most to least dependencies
+--Then CREATE TABLEs in order of least to most dependencies
+--Seed in the same order that the tables are created 
 
 DROP TABLE IF EXISTS question_follows;
 CREATE TABLE question_follows (
@@ -95,3 +99,12 @@ VALUES
     (SELECT id from replies WHERE body='Structured Query Language'), 
     (SELECT id FROM users WHERE fname='Jesse' AND lname= 'Lin'), 
     'What is that');
+
+INSERT INTO
+    question_likes (user_id, question_id)
+VALUES  
+    ((SELECT id FROM users WHERE fname='Jesse' AND lname= 'Lin'),
+    (SELECT id from questions WHERE title='Where do babies come from?')),
+
+    ((SELECT id FROM users WHERE fname='Jae-Son' AND lname= 'Song'),
+    (SELECT id from questions WHERE title='What is SQL?'));
