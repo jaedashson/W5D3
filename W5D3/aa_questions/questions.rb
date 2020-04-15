@@ -1,6 +1,7 @@
 require 'sqlite3'
 require_relative "questions_database"
 require_relative "users.rb"
+require_relative "replies.rb"
 
 class Question
     attr_accessor :id, :title, :body, :user_id
@@ -74,5 +75,10 @@ class Question
                 id = ?        
         SQL
         User.new(data.first)
+    end
+
+    def replies
+        replies = Reply.find_by_question_id(self.id)
+        replies
     end
 end
