@@ -1,6 +1,7 @@
 require 'sqlite3'
 require_relative "questions_database"
 require_relative "users.rb"
+require_relative "questions.rb"
 
 class QuestionFollow
     attr_accessor :id, :user_id, :question_id
@@ -34,6 +35,21 @@ class QuestionFollow
                 question_id = ?
         SQL
         data.map { |datum| User.new(datum) }
+    end
+
+    def self.followed_questions_for_user_id(other_user_id)
+        data = QuestionsDatabase.instance.execute(<<-SQL, other_user_id)
+            SELECT
+                *
+            FROM
+                questions
+            JOIN
+                question_follows ON questions.id = question_follows.question_id
+            WHERE
+                question_follows.user_id = ?
+        SQL
+        data.map { |datum| Question.new(datum) }
+        
     end
 
     def initialize(options)
