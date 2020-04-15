@@ -1,5 +1,7 @@
 require 'sqlite3'
 require_relative "questions_database"
+require_relative "users.rb"
+require_relative "questions.rb"
 
 class Reply
     attr_accessor :id, :subject_question_id, :parent_reply_id, :user_id, :body
@@ -77,7 +79,7 @@ class Reply
     end
 
     def author
-        author = QuestionsDatabase.instance.execute(<<-SQL, self.user_id)
+        data = QuestionsDatabase.instance.execute(<<-SQL, self.user_id)
             SELECT
               *
             FROM
@@ -85,6 +87,20 @@ class Reply
             WHERE
               id = ?
         SQL
-        author
+        User.new(data.first)
     end
+
+    def question
+        data = QuestionsDatabase.instance.execute(<<-SQL, self.subject_question_id)
+            SELECT
+              *
+            FROM
+              questions
+            WHERE
+              id = ?
+        SQL
+        Question.new(data.first)
+    end
+
+
 end
