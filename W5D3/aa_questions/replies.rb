@@ -113,4 +113,24 @@ class Reply
         SQL
         Reply.new(data.first)
     end
+
+    def child_replies
+        data = QuestionsDatabase.instance.execute(<<-SQL, self.id)
+            SELECT
+              *
+            FROM
+              replies
+            WHERE
+              id IN (
+                SELECT
+                  id
+                FROM
+                  replies
+                WHERE
+                  parent_reply_id = ?
+              )
+        SQL
+        data.map { |datum| Reply.new(datum) }
+    end
+
 end
