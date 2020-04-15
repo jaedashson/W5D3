@@ -21,6 +21,18 @@ class Reply
         Reply.new(data.first)
     end
 
+    def self.find_by_user_id(other_user_id)
+      data = QuestionsDatabase.instance.execute(<<-SQL, other_user_id)
+        SELECT
+          *
+        FROM
+          replies
+        WHERE
+          user_id = ?
+      SQL
+      data.map { |datum| Reply.new(datum) }
+    end
+
     def initialize(options)
         @id = options['id']
         @subject_question_id = options['subject_question_id']
