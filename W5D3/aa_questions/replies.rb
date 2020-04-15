@@ -102,5 +102,15 @@ class Reply
         Question.new(data.first)
     end
 
-
+    def parent_reply
+        data = QuestionsDatabase.instance.execute(<<-SQL, self.parent_reply_id)
+            SELECT
+              *
+            FROM
+              replies
+            WHERE
+              id = ?
+        SQL
+        Reply.new(data.first)
+    end
 end
