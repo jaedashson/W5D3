@@ -75,4 +75,16 @@ class Reply
               id = ?
         SQL
     end
+
+    def author
+        author = QuestionsDatabase.instance.execute(<<-SQL, self.user_id)
+            SELECT
+              *
+            FROM
+              users
+            WHERE
+              id = ?
+        SQL
+        author
+    end
 end
