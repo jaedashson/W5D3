@@ -21,6 +21,18 @@ class Question
         Question.new(data.first)
     end
 
+    def self.find_by_author_id(author_id)
+      data = QuestionsDatabase.instance.execute(<<-SQL, author_id)
+        SELECT
+          *
+        FROM
+          questions
+        WHERE
+          user_id = ?
+      SQL
+      data.map { |datum| Question.new(datum) }
+    end
+
     def initialize(options)
         @id = options['id']
         @title = options['title']
